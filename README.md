@@ -1,4 +1,4 @@
-## SlackTail = SLAIL
+## Slack + Tail = SLAIL
 
 ### Installation
 Simple install for now... clone this repo, run composer install. You'll need PHP.
