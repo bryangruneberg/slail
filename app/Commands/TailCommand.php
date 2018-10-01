@@ -6,7 +6,9 @@ use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use PhpSlackBot\Bot;
 use App\TailCatchallCommand;
-
+use Zend\Log\Logger;
+use Zend\Log\Writer\Stream;
+use Zend\Log\Filter\Priority;
 
 class TailCommand extends Command
 {
@@ -18,10 +20,10 @@ class TailCommand extends Command
     {
         $this->info('Slinking into slack...');
 
-        $logger = new \Zend\Log\Logger();
-        $writer = new \Zend\Log\Writer\Stream("php://output");
+        $logger = new Logger();
+        $writer = new Stream("php://output");
 
-        $filter = new \Zend\Log\Filter\Priority(\Zend\Log\Logger::CRIT);
+        $filter = new Priority(Logger::CRIT);
         $writer->addFilter($filter);
         $logger->addWriter($writer);
 
