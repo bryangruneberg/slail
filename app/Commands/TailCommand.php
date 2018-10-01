@@ -10,25 +10,10 @@ use App\TailCatchallCommand;
 
 class TailCommand extends Command
 {
-    /**
-     * The signature of the command.
-     *
-     * @var string
-     */
-    protected $signature = 'tail {--channel= : Tail the specific channel}';
+    protected $signature = 'tail';
 
-    /**
-     * The description of the command.
-     *
-     * @var string
-     */
-    protected $description = 'Tail a slack channel';
+    protected $description = 'Tail slack';
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         $this->info('Slinking into slack...');
@@ -46,16 +31,5 @@ class TailCommand extends Command
         $bot->loadCommand(new TailCatchallCommand());
         $bot->loadInternalCommands(); // This loads example commands
         $bot->run();
-    }
-
-    /**
-     * Define the command's schedule.
-     *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
-     * @return void
-     */
-    public function schedule(Schedule $schedule)
-    {
-        // $schedule->command(static::class)->everyMinute();
     }
 }

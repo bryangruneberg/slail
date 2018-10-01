@@ -1,10 +1,20 @@
 ## Slack + Tail = SLAIL
 
 ### Installation
-Simple install for now... clone this repo, run composer install. You'll need PHP.
+You'll need PHP and composer (see getcomposer.org).
+
+`composer global require bryangruneberg/slail`
+
+Make sure your composer global vendor directory is in your path
 
 ### Configuration
-Copy config.json.example to config.json, edit it and add add your own token from https://api.slack.com/custom-integrations/legacy-tokens
+Edit/create the file `~/.slail.conf` as follows
+
+```
+{ 
+  "token": "<LEGACY TOKEN FROM: https://api.slack.com/custom-integrations/legacy-tokens>" 
+}
+```
 
 ## License
 SLAIL is an open-source software licensed under the MIT license
