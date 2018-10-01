@@ -31,15 +31,6 @@ class TailCommand extends Command
      */
     public function handle()
     {
-        $config = json_decode(file_get_contents("config.json"));
-        if(!$config) {
-            die("Please configure me.");
-        }
-
-        if(!$config->token) {
-            die("Please token me.");
-        }
-
         $this->info('Slinking into slack...');
 
         $logger = new \Zend\Log\Logger();
@@ -50,7 +41,7 @@ class TailCommand extends Command
         $logger->addWriter($writer);
 
         $bot = new Bot();
-        $bot->setToken($config->token);
+        $bot->setToken(config('slail.token'));
         $bot->initLogger($logger);
         $bot->loadCommand(new TailCatchallCommand());
         $bot->loadInternalCommands(); // This loads example commands
