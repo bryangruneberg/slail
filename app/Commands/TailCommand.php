@@ -31,7 +31,6 @@ class TailCommand extends Command
         $bot->setToken(config('slail.token'));
         $bot->initLogger($logger);
         $bot->loadCommand(new TailCatchallCommand());
-        $bot->loadInternalCommands(); // This loads example commands
         $bot->run();
     }
 }
