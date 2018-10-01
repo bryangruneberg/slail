@@ -28,7 +28,7 @@ class TailCommand extends Command
         $logger->addWriter($writer);
 
         $bot = new Bot();
-        $bot->setToken(config('slail.token'));
+        $bot->setToken(getenv('SLAIL_TOKEN'));
         $bot->initLogger($logger);
         $bot->loadCommand(new TailCatchallCommand());
         $bot->loadInternalCommands(); // This loads example commands
