@@ -130,7 +130,11 @@ class TailCatchallCommand extends \PhpSlackBot\Command\BaseCommand {
             }
 
             $team = $this->getChannelNameFromChannelId($data['channel']);
-	    $username = $this->getUserNameFromUserId($data['user']);
+            if(isset($data['user'])) {
+                $username = $this->getUserNameFromUserId($data['user']);
+            } else {
+                $username = "UNKNOWN";
+            }
 
             $spaceIdentifier = $channel ? $channel : 'UNKNOWN';
 
