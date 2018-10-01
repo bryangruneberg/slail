@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function readConfiguration() 
     {
         if(getenv('SLAIL_TOKEN')) {
+            config(['slail.token' => getenv('SLAIL_TOKEN')]);
             return;
         }
 
@@ -53,6 +54,6 @@ class AppServiceProvider extends ServiceProvider
             throw new Exception('"token" does not exist in config.json');
         }
 
-        putenv('SLAIL_TOKEN=' . $slailConfig->token);
+        config(['slail.token' => $slailConfig->token]);
     }
 }
