@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => App\Commands\TailCommand::class,
+    'default' => NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,
 
     /*
     |--------------------------------------------------------------------------

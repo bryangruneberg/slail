@@ -4,33 +4,36 @@ namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
-use PhpSlackBot\Bot;
-use App\TailCatchallCommand;
-use Zend\Log\Logger;
-use Zend\Log\Writer\Stream;
-use Zend\Log\Filter\Priority;
 
 class TailCommand extends Command
 {
+    /**
+     * The signature of the command.
+     *
+     * @var string
+     */
     protected $signature = 'tail';
 
+    /**
+     * The description of the command.
+     *
+     * @var string
+     */
     protected $description = 'Tail slack';
 
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
     public function handle()
     {
-        $this->info('Slinking into slack...');
+        $slackTail = new \App\SlackTail(env('AMAZEE_SLACK_TOKEN'));
+        $slackTail->addRegexFilter('/.*/');
 
-        $logger = new Logger();
-        $writer = new Stream("php://output");
-
-        $filter = new Priority(Logger::CRIT);
-        $writer->addFilter($filter);
-        $logger->addWriter($writer);
-
-        $bot = new Bot();
-        $bot->setToken(config('slail.token'));
-        $bot->initLogger($logger);
-        $bot->loadCommand(new TailCatchallCommand());
-        $bot->run();
+        $slackTail->tail(function($match) {
+//            print_r($match['data']);
+            print($match['data']['text']);
+        });
     }
 }
