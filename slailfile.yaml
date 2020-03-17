@@ -1,0 +1,5 @@
+all:
+  message-whitelist:
+    - /.*/
+  sender-whitelist:
+    - /.*/

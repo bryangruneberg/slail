@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class TailCommand extends Command
 {
@@ -64,7 +65,7 @@ class TailCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tail';
+    protected $signature = 'tail {context=all : Specify a Slail context} {--slailfile=slailfile.yaml : Slail YML file}';
 
     /**
      * The description of the command.
@@ -73,6 +74,38 @@ class TailCommand extends Command
      */
     protected $description = 'Tail slack';
 
+    public function loadSlailFile($slailFile, $context = "all") {
+        if(!file_exists($slailFile)) {
+            $this->error("Slailfile missing: " . $slailFile);
+            return false;
+        }
+
+        $slailConfig = Yaml::parse(file_get_contents($slailFile));
+        if(isset($slailConfig[$context]['message-whitelist']) && is_array($slailConfig[$context]['message-whitelist'])) 
+        {
+            foreach($slailConfig[$context]['message-whitelist'] as $wl) {
+                if($this->isVerbose()) {
+                    $this->info("[$context] " . 'Loading ' . $wl . ' to message whitelist');
+                }
+
+                $this->addMessageWhitelistRegexMatch($wl);
+            }
+        }
+
+        if(isset($slailConfig[$context]['sender-whitelist']) && is_array($slailConfig[$context]['sender-whitelist'])) 
+        {
+            foreach($slailConfig[$context]['sender-whitelist'] as $wl) {
+                if($this->isVerbose()) {
+                    $this->info("[$context] " . 'Loading ' . $wl . ' to sender whitelist');
+                }
+
+                $this->addSendersWhitelistRegexMatch($wl);
+            }
+        }
+
+        return TRUE;
+    }
+
     /**
      * Execute the console command.
      *
@@ -80,9 +113,11 @@ class TailCommand extends Command
      */
     public function handle()
     {
-        $this->addMessageWhitelistRegexMatch('/.*/');
-        $this->addSendersWhitelistRegexMatch('/Blaize Kaye/');
-        $this->addSendersWhitelistRegexMatch('/Bryan Gruneberg/');
+        if(!$this->loadSlailfile($this->option("slailfile"), $this->argument('context'))) {
+            return 255;
+        }
+
+        $this->info("Loaded context: " . $this->argument('context'));
 
         $slackTail = new \App\SlackTail(env('AMAZEE_SLACK_TOKEN'));
         

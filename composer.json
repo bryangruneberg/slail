@@ -20,6 +20,7 @@
         "coderstephen/slack-client": "^0.3.0",
         "laminas/laminas-text": "^2.7",
         "laravel-zero/framework": "^7.0",
+        "symfony/yaml": "^5.0",
         "wrapi/slack": "^1.0"
     },
     "require-dev": {
