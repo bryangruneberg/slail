@@ -52,7 +52,6 @@ class SlackTail
         $client->connect();
 
         $client->on('message', function ($data) use ($client, $matchFunction, $nomatchFunction) {
-            echo "Incoming message: ".$data['text']."\n";
             $this->enrichSlackData($data);
 
             foreach($this->regexFilters as $regex) {

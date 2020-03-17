@@ -31,9 +31,12 @@ class TailCommand extends Command
         $slackTail = new \App\SlackTail(env('AMAZEE_SLACK_TOKEN'));
         $slackTail->addRegexFilter('/.*/');
 
-        $slackTail->tail(function($match) {
-//            print_r($match['data']);
-            print($match['data']['text']);
+        $output = $this->output;
+        $slackTail->tail(function($match) use ($output) {
+            $data = $match['data'];
+            print_r($data);
+            $channel = $data['conversation']['channel']['name_normalized'] ?? '__none__';
+            $output->writeln('<fg=red>' . $channel . ':</> ' . $data['text']);
         });
     }
 }
