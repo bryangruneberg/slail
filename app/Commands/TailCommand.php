@@ -128,11 +128,23 @@ class TailCommand extends Command
                 return;
             }
 
+            if($data['subtype'] == "message_replied") {
+                return;
+            }
+
             if(empty($data['text']) && isset($data['message_data']['text'])) {
                 $data['text'] = $data['message_data']['text'];    
             }
 
             $sender = $this->findUserName($data) ?? '__user__';
+            
+            if($this->isVerbose()) {
+		$type = $data['type'] ?? "__unknow_type__";
+		$subtype = $data['subtype'] ?? "__unknown_subtype__";
+                
+		$this->info("Message from ({$type}|{$subtype})" . $sender);
+            }
+
             $outline = $this->getFormattedOutput($data);
             if($this->messageMatchesWhitelist($outline) && $this->senderMatchesWhitelist($sender)) {
                 $output->writeln($outline);
@@ -162,6 +174,10 @@ class TailCommand extends Command
             $sender = $this->findUserName($reactionData) ?? '__user__';
             $outline = $this->getFormattedOutput($reactionData);
             
+            if($this->isVerbose()) {
+                $this->info("Reaction from " . $sender);
+            }
+            
             if($this->messageMatchesWhitelist($outline) && $this->senderMatchesWhitelist($sender)) {
                 $output->writeln($outline);            
             }
@@ -172,17 +188,18 @@ class TailCommand extends Command
         $user = $this->findUserName($data) ?? '__user__';
         $channel = $this->findChannelName($data) ?? '__channel__';
 
-        $prefix = "<fg={$this->getColorFor($channel)}>#" . $channel . '</>' .
+	$threadIndicator = "";
+        if(isset($data['thread_ts'])) {
+            $threadIndicator = ".<fg=".$this->getColorFor($data['thread_ts']) .">". $data['thread_ts'] ."</>";
+        }
+
+        $prefix = "<fg={$this->getColorFor($channel)}>#" . $channel . '</>' . $threadIndicator .
             ': ' . 
             "<fg={$this->getColorFor($user)}>@" . $user . '</>';
     
 
-        if(isset($data['thread_ts'])) {
-            $prefix = $prefix . " ({$data['thread_ts']}) ";
-        }
-
         if(isset($data['type']) && $data['type'] == "reaction_added") {
-            return  $prefix . '] {{' . $data['reaction_item']['text'] .'}} ==> <options=underscore,reverse> ++' . $data['reaction'] . '</>';
+            return  $prefix . '] {{' . substr($data['reaction_item']['text'], 0, 50) .'}} ==> <options=underscore,reverse> ++' . $data['reaction'] . '</>';
         } else {
             return  $prefix . '] ' . $data['text'];
         }
